@@ -1,22 +1,27 @@
-function onResolved(data) {
-  console.log('data:', data)
-  return data
-}
-
-function onRejected(reason) {
-  console.log('reason:', reason)
-  throw new Error(reason)
-}
-
 function Promise(executor) {
-  this.status = 'PENDING'
-  this.resolvedCallbacks = []
-  this.rejectedCallbacks = []
+  var self = this
+  self.status = 'PENDING'
+  self.resolvedCallbacks = []
+  self.rejectedCallbacks = []
+  self.data = null
   executor = typeof executor === 'function' ? executor : function(){}
+
   try {
     executor(onResolved, onRejected)
   }catch (e){
+    onRejected(e)
+  }
 
+  function onResolved(data) {
+    self.status = 'RESOLVED'
+    self.data = data
+  }
+
+  function onRejected(reason) {
+    var error
+    self.status = 'REJECTED'
+    error= new Error(reason)
+    self.data = error
   }
 }
 
