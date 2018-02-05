@@ -38,25 +38,63 @@ function Promise(executor) {
 }
 
 Promise.prototype.then = function (onFulfilled, onRejected) {
+
+  function resolvePromise(promise, x, resolve, reject){
+    var then
+    var thenCalled
+
+    if(promise === x) reject(new TypeError('Chaining cycle detected for promise!'))
+
+    if(x instanceof Promise) {
+      if(x.status === 'pending') {
+        x.then(function (value) {
+          resolvePromise(promise, value, resolve, reject)
+        }, reject)
+      }else{
+        x.then(resolve,reject)
+      }
+
+      return
+    }else if(typeof x === 'function' || typeof x === 'object'){
+
+      try{
+        then = x.then
+        if(typeof then === 'function') {
+          then.call(x, function(){
+
+          }, function(){
+
+          })
+        }
+      }catch(e){
+        reject(e)
+      }
+
+
+    }else{
+      resolve(x)
+    }
+  }
+
   var self = this
   onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : function(val){return val}
   onRejected = typeof onRejected === 'function' ? onRejected : function(reason){throw reason}
 
+  console.log('self.status:', self.status)
 
   if(self.status !== 'pending') {
-    return new Promise(function (resolve, reject) {
-      var functionToCall = self.status === 'fulfilled' ? onFulfilled : onRejected
-      var result
-      try {
-        result = functionToCall(self.data)
-        // 如果上个then的返回值是个Promise实例 或者Promise executor里面resolve的结果是个Promise实例
-        if(result instanceof Promise || typeof result.then === 'function'){
-          result.then(resolve, reject)
+    return p = new Promise(function (resolve, reject) {
+      setTimeout(function () {
+        var functionToCall = self.status === 'fulfilled' ? onFulfilled : onRejected
+        var result
+        try {
+          result = functionToCall(self.data)
+          console.log('result:', result)
+          resolvePromise(p, result, resolve, reject)
+        } catch (e) {
+          reject(e)
         }
-        resolve()
-      } catch (e) {
-        reject(e)
-      }
+      })
     })
   } else {
     return new Promise(function (resolve, reject) {
