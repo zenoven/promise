@@ -60,10 +60,14 @@ Promise.prototype.then = function (onFulfilled, onRejected) {
       try{
         then = x.then
         if(typeof then === 'function') {
-          then.call(x, function(){
-
-          }, function(){
-
+          then.call(x, function(y){
+            if(thenCalled) return
+            thenCalled = true
+            resolvePromise(promise, y, resolve, reject)
+          }, function(r){
+            if(thenCalled) return
+            thenCalled = true
+            return reject(r)
           })
         }
       }catch(e){
