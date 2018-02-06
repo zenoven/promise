@@ -32,10 +32,8 @@ function Promise(executor) {
   function onRejected(reason) {
     setTimeout(function () {
       if(self.status !== 'pending') return
-      var error
       self.status = 'rejected'
-      error= new Error(reason)
-      self.data = error
+      self.data = reason
       var currentCallback
       for(var i = 0; i < self.rejectedCallbacks.length; i++) {
         currentCallback = self.rejectedCallbacks[i]
@@ -142,26 +140,5 @@ Promise.deferred = Promise.defer = function(){
   })
   return dfd
 }
-
-// var p = new Promise(function (resolve, reject) {
-//   setTimeout(function () {
-//     resolve('aaa')
-//   }, 300)
-// })
-//
-// p.then(function (data) {
-//   console.log(data)
-//   return '111'
-// })
-// .then(function (data) {
-//   return new Promise(function(res, rej){
-//
-//     setTimeout(function () {
-//       res(data)
-//     }, 1000)
-//   })
-// }).then(function (value) {
-//   console.log('value:', value)
-// })
 
 module.exports = Promise
