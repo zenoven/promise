@@ -92,7 +92,7 @@ function resolvePromise(promise, x, resolve, reject){
 
 Promise.prototype.then = function (onFulfilled, onRejected) {
   var self = this
-  var p 
+  var p
   onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : function(val){return val}
   onRejected = typeof onRejected === 'function' ? onRejected : function(reason){throw reason}
 
@@ -134,22 +134,34 @@ Promise.prototype.then = function (onFulfilled, onRejected) {
 
 }
 
-var p = new Promise(function (resolve, reject) {
-  setTimeout(function () {
-    resolve('aaa')
-  }, 300)
-})
-
-p
-  .then(function (data) {
-    console.log(data)
-    return '111'
+Promise.deferred = Promise.defer = function(){
+  var dfd = {}
+  dfd.promise = new Promise(function (resolve, reject) {
+    dfd.resolve = resolve
+    dfd.reject = reject
   })
-  .then(function (data) {
-    return new Promise(function(res, rej){
+  return dfd
+}
 
-      setTimeout(function () {
-        res(data)
-      }, 1000)
-    })
-  })
+// var p = new Promise(function (resolve, reject) {
+//   setTimeout(function () {
+//     resolve('aaa')
+//   }, 300)
+// })
+//
+// p.then(function (data) {
+//   console.log(data)
+//   return '111'
+// })
+// .then(function (data) {
+//   return new Promise(function(res, rej){
+//
+//     setTimeout(function () {
+//       res(data)
+//     }, 1000)
+//   })
+// }).then(function (value) {
+//   console.log('value:', value)
+// })
+
+module.exports = Promise
