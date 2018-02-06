@@ -155,4 +155,60 @@ Promise.reject = function (reason) {
   })
 }
 
+Promise.race = function(items){
+  var called = false
+  return new Promise(function (resolve, reject) {
+    items.forEach(function (item) {
+      try {
+        item.then(function (result) {
+          if(called) return
+          called = true
+          resolve(result)
+        }, function(reason){
+          if(called) return
+          called = true
+          reject(reason)
+        })
+      }catch (e) {
+        if(called) return
+        called = true
+        reject(e)
+      }
+    })
+  })
+}
+
+Promise.all = function(items){
+  if(!items || typeof items.length === 'undefined') throw new Error('Argument must ben an array')
+  if(items.length === 0) {
+    return Promise.resolve()
+  }
+  var result = {
+    data: [],
+    count: 0
+  }
+  var failed
+  return new Promise(function (resolve, reject) {
+    items.forEach(function (item, index) {
+      try {
+
+        item.then(function (res) {
+          if(failed) return
+          result.count++
+          result.data[index] = res
+          if(result.count === items.length) resolve(result.data)
+        }, function(reason){
+          if(failed) return
+          failed = true
+          reject(reason)
+        })
+      }catch (e) {
+        if(failed) return
+        failed = true
+        reject(e)
+      }
+    })
+  })
+}
+
 module.exports = Promise
