@@ -1,4 +1,5 @@
 function Promise(executor) {
+
   var self = this
   self.status = 'pending'
   self.fulfilledCallbacks = []
@@ -139,6 +140,19 @@ Promise.deferred = Promise.defer = function(){
     dfd.reject = reject
   })
   return dfd
+}
+
+Promise.resolve = function(val){
+  var p
+  return p = new Promise(function(resolve, reject){
+    resolvePromise(p, val, resolve, reject)
+  })
+}
+
+Promise.reject = function (reason) {
+  return new Promise(function(resolve, reject){
+    reject(reason)
+  })
 }
 
 module.exports = Promise
