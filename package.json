@@ -21,5 +21,9 @@
   "homepage": "https://github.com/zenoven/promise#readme",
   "devDependencies": {
     "promises-aplus-tests": "^2.1.2"
+  },
+  "dependencies": {
+    "es6-promise": "^4.2.4",
+    "isomorphic-fetch": "^2.2.1"
   }
 }

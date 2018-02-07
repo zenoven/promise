@@ -130,7 +130,10 @@ Promise.prototype.then = function (onFulfilled, onRejected) {
       })
     })
   }
+}
 
+Promise.prototype.catch = function (onRejected) {
+  return this.then(null, onRejected)
 }
 
 Promise.deferred = Promise.defer = function(){
