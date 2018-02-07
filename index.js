@@ -10,12 +10,6 @@ function Promise(executor) {
     throw new TypeError('Promise resolver ' + executor + 'is not a function')
   }
 
-  try {
-    executor(onFulfilled, onRejected)
-  }catch (e){
-    onRejected(e)
-  }
-
   function onFulfilled(data) {
     setTimeout(function () {
       if(self.status !== 'pending') return
@@ -41,8 +35,14 @@ function Promise(executor) {
         typeof currentCallback === 'function' && currentCallback(self.data)
       }
     })
-
   }
+
+  try {
+    executor(onFulfilled, onRejected)
+  }catch (e){
+    onRejected(e)
+  }
+
 }
 
 function resolvePromise(promise, x, resolve, reject){
