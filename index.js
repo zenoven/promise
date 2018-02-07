@@ -17,9 +17,6 @@ function Promise(executor) {
   }
 
   function onFulfilled(data) {
-
-    if(data instanceof Promise) return data.then(onFulfilled, onRejected)
-
     setTimeout(function () {
       if(self.status !== 'pending') return
       self.status = 'fulfilled'
