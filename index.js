@@ -5,7 +5,10 @@ function Promise(executor) {
   self.fulfilledCallbacks = []
   self.rejectedCallbacks = []
   self.data = null
-  executor = typeof executor === 'function' ? executor : function(){}
+
+  if(typeof executor !== 'function') {
+    throw new TypeError('Promise resolver ' + executor + 'is not a function')
+  }
 
   try {
     executor(onFulfilled, onRejected)
