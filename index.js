@@ -1,4 +1,4 @@
-function Promise(executor) {
+function Promise(resolver) {
 
   var self = this
   self.status = 'pending'
@@ -6,8 +6,8 @@ function Promise(executor) {
   self.rejectedCallbacks = []
   self.data = null
 
-  if(typeof executor !== 'function') {
-    throw new TypeError('Promise resolver ' + executor + 'is not a function')
+  if(typeof resolver !== 'function') {
+    throw new TypeError('Promise resolver ' + resolver + 'is not a function')
   }
 
   function onFulfilled(data) {
@@ -38,7 +38,7 @@ function Promise(executor) {
   }
 
   try {
-    executor(onFulfilled, onRejected)
+    resolver(onFulfilled, onRejected)
   }catch (e){
     onRejected(e)
   }
@@ -113,7 +113,7 @@ Promise.prototype.then = function (onFulfilled, onRejected) {
       self.fulfilledCallbacks.push(function(){
         try {
           var result = onFulfilled(self.data)
-          // 如果上个then的返回值是个Promise实例 或者Promise executor里面resolve的结果是个Promise实例
+          // 如果上个then的返回值是个Promise实例 或者Promise resolver里面resolve的结果是个Promise实例
           resolvePromise(p, result, resolve, reject)
         } catch (e) {
           reject(e)
@@ -122,7 +122,7 @@ Promise.prototype.then = function (onFulfilled, onRejected) {
       self.rejectedCallbacks.push(function(){
         try {
           var result = onRejected(self.data)
-          // 如果上个then的返回值是个Promise实例 或者Promise executor里面resolve的结果是个Promise实例
+          // 如果上个then的返回值是个Promise实例 或者Promise resolver里面resolve的结果是个Promise实例
           resolvePromise(p, result, resolve, reject)
         } catch (e) {
           reject(e)
