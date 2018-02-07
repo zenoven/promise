@@ -215,4 +215,3 @@ Promise.all = function(items){
 }
 
 module.exports = Promise
-
