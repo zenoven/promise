@@ -1,3 +1,4 @@
+// https://juejin.im/post/59e85eebf265da430d571f89
 
 setTimeout(function() {
   console.log('2');
@@ -29,7 +30,7 @@ setTimeout(function() {
 
 
 /**
-
+ * 推测结果
  * 1、7
  * 6、8
  * 2、4
@@ -38,3 +39,19 @@ setTimeout(function() {
  * 10、12
 
  **/
+
+/**
+ * 实际结果
+ 1
+ 7
+ 6
+ 8
+ 2
+ 4
+ 9
+ 11
+ 3
+ 10
+ 5
+ 12
+ */
